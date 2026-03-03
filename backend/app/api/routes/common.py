@@ -47,3 +47,14 @@ async def recon_page():
 
     except Exception as ex:
         raise HTTPException(status_code=404, detail=str(ex))
+
+
+@router.get("/eula", response_class=HTMLResponse)
+async def eula_page():
+    try:
+
+        return jinja_templates.TemplateResponse(
+            "/templates/home/eula.html", {"request": {"API Name": PROJECT_NAME, "version": VERSION}})
+
+    except Exception as ex:
+        raise HTTPException(status_code=404, detail=str(ex))
