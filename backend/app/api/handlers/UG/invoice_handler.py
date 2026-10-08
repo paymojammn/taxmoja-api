@@ -143,10 +143,15 @@ class TaxInvoiceHandler(InvoiceHandler):
                         custom_measure_unit = tax_detail["commodityGoodsExtendEntity"]["customsMeasureUnit"]
                         piece_measure_unit = custom_measure_unit
                         self.custom_scale_unit = tax_detail["commodityGoodsExtendEntity"]["packageScaledValueCustoms"]
-                        self.piece_qty = float(quantity) / \
+                        piece_qty = float(quantity) / \
                             float(self.custom_scale_unit)
-                        self.total_weight = str(
-                            self.piece_qty * float(6.34))
+                        # EFRIS allows at most 12 integer and 4 decimal
+                        # characters; raw float repr (e.g. 20351.399999999998)
+                        # is rejected, so round and format explicitly.
+                        self.piece_qty = "{:.4f}".format(
+                            round(piece_qty, 4)).rstrip("0").rstrip(".")
+                        self.total_weight = "{:.4f}".format(
+                            round(piece_qty * 6.34, 4)).rstrip("0").rstrip(".")
                     except KeyError:
                         custom_measure_unit = piece_measure_unit
 
